@@ -78,7 +78,8 @@ use_signed_gradients = True
 hog = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins,
         deriv_aperture, win_sigma, histogram_norm_type, L2_hys_threshold,
         gamma_correction, nlevels, use_signed_gradients)
-pickle.dump(hog, open("./saved/hog.p", "wb"))
+# pickle.dump(hog, open("./saved/hog.p", "wb"))
+hog.save("./saved/hog.xml")
 print("Created HOG descriptor")
 
 # calculate HOG feature descriptor for each image
@@ -129,10 +130,15 @@ print("Training model...")
 svm.train(descriptors_train, cv2.ml.ROW_SAMPLE, labels_train)
 print("Trained SVM model")
 
+# svm.save("./saved/svm.xml")
+# svm2 = cv2.ml.SVM_create()
+# svm2 = svm2.load("./saved/svm.xml")
+
 # predict on test data
 prediction = svm.predict(descriptors_test)
 print("Current model has %.2f %% accuracy on test data" % (100*accuracy(labels_test, prediction[1])))
 
-# save model to pickle file
-pickle.dump(svm, open("./saved/svm.p", "wb"))
-print("Saved model to pickle file")
+# save model
+# pickle.dump(svm, open("./saved/svm.p", "wb"))
+svm.save("./saved/svm.xml")
+print("Saved model")
