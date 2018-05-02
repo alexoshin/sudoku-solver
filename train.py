@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import pickle
 import os
+import glob
+from PIL import Image
 from sklearn import datasets
 
 # size based on MNIST digit size
@@ -36,9 +38,103 @@ print("Loaded MNIST dataset")
 
 # digits = mnist.data
 # digits = np.array(mnist.data, 'int16')
-digits = np.asarray(list(map(reshape, mnist.data)))
+digits = list(map(reshape, mnist.data))
+# cv2.imshow("1", digits[0])
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 # labels = np.array(mnist.target, 'int')
-labels = np.asarray(mnist.target, 'int')
+labels = list(mnist.target)
+
+list_0 = map(cv2.imread, glob.glob("./font_dataset/0/*.png"))
+for im in list_0:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(0)
+list_1 = map(cv2.imread, glob.glob("./font_dataset/1/*.png"))
+for im in list_1:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(1)
+list_2 = map(cv2.imread, glob.glob("./font_dataset/2/*.png"))
+for im in list_2:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(2)
+list_3 = map(cv2.imread, glob.glob("./font_dataset/3/*.png"))
+for im in list_3:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(3)
+list_4 = map(cv2.imread, glob.glob("./font_dataset/4/*.png"))
+for im in list_4:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(4)
+list_5 = map(cv2.imread, glob.glob("./font_dataset/5/*.png"))
+for im in list_5:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(5)
+list_6 = map(cv2.imread, glob.glob("./font_dataset/6/*.png"))
+for im in list_6:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(6)
+list_7 = map(cv2.imread, glob.glob("./font_dataset/7/*.png"))
+for im in list_7:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(7)
+list_8 = map(cv2.imread, glob.glob("./font_dataset/8/*.png"))
+for im in list_8:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(8)
+list_9 = map(cv2.imread, glob.glob("./font_dataset/9/*.png"))
+for im in list_9:
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bitwise_not(im)
+    im = cv2.resize(im, (IMAGE_SIZE, IMAGE_SIZE))
+    im = deskew(im)
+    digits.append(im)
+    labels.append(9)
+# im = cv2.imread("./font_dataset/0/img001-00001.png", cv2.IMREAD_GRAYSCALE)
+# cv2.imshow("1", digits[0])
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# im = reshape(im)
+# digits.append(im)
+# labels.append(0)
+
+digits = np.asarray(digits)
+labels = np.asarray(labels, 'int')
 
 # randomize the data
 rand = np.random.RandomState(10)
