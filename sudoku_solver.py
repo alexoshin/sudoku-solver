@@ -1,10 +1,9 @@
 # Written by Alexander Oshin
-# References: Wikipedia pages for Sudoku and Exact Cover,
-# as well as Knuth's paper available here:
+# References: Wikipedia pages for Sudoku and Exact Cover, as well as Knuth's paper available here:
 # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
 
 
-import dlx
+import dancing_links
 
 
 # Creates an exact cover problem matrix from an NxN sudoku puzzle matrix
@@ -58,7 +57,7 @@ if __name__ == '__main__':
                    [1, 0, 0, 0, 0, 6, 3, 0, 4],
                    [8, 0, 0, 1, 0, 9, 6, 7, 0]]
     exact_cover_matrix = create_exact_cover_matrix(test_puzzle)
-    solution = dlx.find_solution(exact_cover_matrix)
+    solution = dancing_links.find_solution(exact_cover_matrix)
     sudoku_solution = convert_solution(exact_cover_matrix, solution)
     for row in sudoku_solution:
         print(row)

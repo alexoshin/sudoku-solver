@@ -1,7 +1,6 @@
 # Written by Alexander Oshin
-# Based on Dancing Links by Donald E. Knuth, Stanford University
-# Paper available publicly at:
-# https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
+# References: Dancing Links by Donald E. Knuth, Stanford University
+# Paper available publicly at: https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
 
 
 class Data:

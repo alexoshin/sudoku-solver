@@ -1,9 +1,11 @@
 # Written by Alexander Oshin
+# References: OpenCV documentation, Wikipedia pages for classical computer vision topics
 
 
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import load_model
 
 
 # Read an image as grayscale
@@ -93,15 +95,23 @@ def extract_puzzle(img):
     box_size = int(size / 9)
     imgs = np.zeros((9, 9, box_size, box_size), dtype='uint8')
     digits = np.zeros((9, 9), dtype='uint8')
-    # TODO: Add classifier
+    # TODO: Test classifier
+    classifier = load_model('classifier.h5')
     for i in range(9):
         for j in range(9):
             potential_digit = dst[box_size*i:box_size*(i+1), box_size*j:box_size*(j+1)]
             white_pixel_count = cv2.countNonZero(potential_digit)
             if white_pixel_count > 550:
                 imgs[i, j] = dst[box_size*i:box_size*(i+1), box_size*j:box_size*(j+1)]
-            ax = plt.subplot(9, 9, (i*9)+j+1)
-            ax.imshow(imgs[i, j], cmap='gray')
+                scaled_digit = cv2.resize(potential_digit, (28, 28))
+                predicted_value = classifier.predict(np.array(scaled_digit).reshape((1, 28, 28, 1)))
+                predicted_value = np.argmax(predicted_value[0])
+
+                print(predicted_value)
+                plt.imshow(scaled_digit)
+                plt.show()
+                digits[i, j] = predicted_value
+
     plt.show()
 
 
@@ -109,7 +119,7 @@ def extract_puzzle(img):
 
 
 if __name__ == '__main__':
-    img = read_gray_img('./images/test-puzzle.jpg')
+    img = read_gray_img('./images/test1.jpg')
     img = extract_puzzle(img)
     # plt.imshow(img, cmap='gray')
     # plt.show()
