@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Input, Flatten, Dense, Dropout, Conv2D, MaxP
 from tensorflow.keras.models import Model
 
 
-def train_classifier(plot_loss=True):
+def train_classifier(plot_loss=False):
     num_classes = 10
 
     with open('./font_data_augmented.pickle', 'rb') as f:

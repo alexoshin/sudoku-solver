@@ -23,8 +23,7 @@ def create_exact_cover_matrix(puzzle):
                 row_col = N * r + c
                 row_num = N * N + N * r + cand
                 col_num = 2 * N * N + N * c + cand
-                box_num = 3 * N * N + r // sqrt_N * N * sqrt_N
-                + c // sqrt_N * N + cand
+                box_num = 3 * N * N + r // sqrt_N * N * sqrt_N + c // sqrt_N * N + cand
                 exact_cover[row][row_col] = 1
                 exact_cover[row][row_num] = 1
                 exact_cover[row][col_num] = 1
@@ -33,7 +32,9 @@ def create_exact_cover_matrix(puzzle):
 
 
 # Converts a solution in exact cover space back to sudoku space
-def convert_solution(exact_cover_matrix, solution):
+def convert_solution(solution):
+    if solution is None:
+        return None
     N = int(len(solution) ** (1.0 / 2))
     sudoku_solution = [[0 for i in range(N)] for j in range(N)]
     for i in range(len(solution)):
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     #                [0, 0, 3, 0],
     #                [0, 1, 0, 0],
     #                [0, 0, 0, 2]]
-    test_puzzle = [[0, 5, 3, 2, 0, 7, 0, 0, 8],
+    test_puzzle = [[5, 5, 3, 2, 0, 7, 0, 0, 8],
                    [6, 0, 1, 5, 0, 0, 0, 0, 2],
                    [2, 0, 0, 9, 1, 3, 0, 5, 0],
                    [7, 1, 4, 6, 9, 2, 0, 0, 0],
@@ -58,6 +59,6 @@ if __name__ == '__main__':
                    [8, 0, 0, 1, 0, 9, 6, 7, 0]]
     exact_cover_matrix = create_exact_cover_matrix(test_puzzle)
     solution = dancing_links.find_solution(exact_cover_matrix)
-    sudoku_solution = convert_solution(exact_cover_matrix, solution)
+    sudoku_solution = convert_solution(solution)
     for row in sudoku_solution:
         print(row)

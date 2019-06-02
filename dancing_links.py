@@ -129,6 +129,8 @@ def search(O, h, k):
 
 # Change solution type from data to row numbers
 def convert_solution(O):
+    if O is None:
+        return None
     solution = [o.position[0] for o in O]
     solution.sort()
     return solution
