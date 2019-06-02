@@ -2,41 +2,61 @@
 # References: Tensorflow and Keras documentation, MNIST documentation
 
 
+import pickle
+import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.keras.layers import Input, Flatten, Dense, Dropout, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Model
 
 
-
-if __name__ == '__main__':
-    mnist = tf.keras.datasets.mnist
+def train_classifier(plot_loss=True):
     num_classes = 10
 
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    x_train, x_test = x_train / 255.0, x_test / 255.0
+    with open('./font_data_augmented.pickle', 'rb') as f:
+        data = pickle.load(f)
+    images = data['images']
+    img_height, img_width = images[0].shape
+    images = images.reshape((len(images), img_height, img_width, 1))
+    labels = data['labels']
+    labels = tf.keras.utils.to_categorical(labels, num_classes)
+    indices = np.random.permutation(len(images))
+    split_index = int(len(indices) * 0.9)
+    train_indices = indices[:split_index]
+    test_indices = indices[split_index:]
 
-    img_height, img_width = x_train[0].shape
-
-    x_train = x_train.reshape((len(x_train), img_height, img_width, 1))
-    x_test = x_test.reshape((len(x_test), img_height, img_width, 1))
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+    x_train = images[train_indices]
+    y_train = labels[train_indices]
+    x_test = images[test_indices]
+    y_test = labels[test_indices]
 
     input = Input(shape=(28, 28, 1))
-    x = Conv2D(64, kernel_size=(3, 3))(input)
-    x = Conv2D(32, kernel_size=(3, 3))(x)
-    x = MaxPooling2D(pool_size=(2, 2))(x)
-    x = Dropout(0.25)(x)
+    x = Conv2D(32, kernel_size=(3, 3), activation='relu')(input)
+    x = Conv2D(32, kernel_size=(3, 3), activation='relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+    x = Conv2D(64, kernel_size=(3, 3), activation='relu')(x)
+    x = Conv2D(64, kernel_size=(3, 3), activation='relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
     x = Flatten()(x)
-    x = Dense(128)(x)
+    x = Dense(256, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    x = Dense(256, activation='relu')(x)
     x = Dropout(0.5)(x)
     output = Dense(num_classes, activation='softmax')(x)
 
     model = Model(input, output)
     model.compile(optimizer=tf.keras.optimizers.Adadelta(), loss=tf.keras.losses.categorical_crossentropy)
 
-    model.fit(x_train, y_train, epochs=10)
+    history = model.fit(x_train, y_train, epochs=50)
+    if plot_loss:
+        plt.plot(history.history['loss'])
+        plt.title('Loss over time')
+        plt.show()
     model.evaluate(x_test, y_test)
 
     model.save('classifier.h5')
     del model
+
+
+if __name__ == '__main__':
+    train_classifier()
