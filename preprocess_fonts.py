@@ -1,14 +1,15 @@
 # Written by Alexander Oshin
 
 
+import os
 import pickle
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
 
-def augment_font_data(plot=False):
-    with open('./font_data.pickle', 'rb') as f:
+def augment_font_data(font_data_dir, plot=False):
+    with open(os.path.join(font_data_dir, 'font_data.pickle'), 'rb') as f:
         data = pickle.load(f)
 
     images = np.array(data['images'])
@@ -86,7 +87,7 @@ def augment_font_data(plot=False):
     new_images = np.array(new_images) / 255.0
     new_labels = np.array(new_labels)
     new_data = {'images': new_images, 'labels': new_labels}
-    with open('./font_data_augmented.pickle', 'wb') as f:
+    with open(os.path.join(font_data_dir, 'font_data_augmented.pickle'), 'wb') as f:
         pickle.dump(new_data, f)
 
 

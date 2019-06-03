@@ -10,10 +10,10 @@ from tensorflow.keras.layers import Input, Flatten, Dense, Dropout, Conv2D, MaxP
 from tensorflow.keras.models import Model
 
 
-def train_classifier(plot_loss=False):
+def train_classifier(data_dir, plot_loss=False):
     num_classes = 10
 
-    with open('./font_data_augmented.pickle', 'rb') as f:
+    with open(data_dir, 'rb') as f:
         data = pickle.load(f)
     images = data['images']
     img_height, img_width = images[0].shape
