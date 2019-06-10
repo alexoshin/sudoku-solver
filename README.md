@@ -8,6 +8,10 @@ Given an input image, the processing pipeline is defined as follows:
 2. Recognize the digits
 3. Solve the puzzle
 
+## Requirements
+* Python 3
+* ImageMagick
+
 ## 1. Find the puzzle
 The puzzle is found by processing the input image using classical computer vision techniques.  Implementation utilizes the open-source library OpenCV<sup>[1](#opencv)</sup>.
 

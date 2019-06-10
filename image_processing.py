@@ -108,10 +108,13 @@ def extract_puzzle(img):
                 scaled_digit = cv2.resize(potential_digit, (28, 28)) / 255.0
                 predicted_value = classifier.predict(np.array(scaled_digit).reshape((1, 28, 28, 1)))
                 predicted_value = np.argmax(predicted_value[0])
+                predicted_value += 1  # Classes are digits 1-9, but represented as 0-8 in the classifier
                 # print(predicted_value)
                 # plt.imshow(scaled_digit, cmap='gray')
                 # plt.show()
                 digits[i, j] = predicted_value
+    for row in digits:
+        print(row)
     return digits
 
 

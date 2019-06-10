@@ -2,32 +2,37 @@
 
 
 import os
-import glob
 import subprocess
 import pickle
 import cv2
+import matplotlib.font_manager as fnt
 
 
-def save_font_data(font_dir, data_dir, exclude_dir):
+def save_font_data(data_dir, exclude_dir=None):
 
-    # Convert paths to operating system for consistency
-    font_dir = os.path.normpath(font_dir)
-    data_dir = os.path.normpath(data_dir)
+    # # Convert paths to operating system for consistency
+    # data_dir = os.path.normpath(data_dir)
 
-    with(open(exclude_dir, 'r')) as f:
-        exclusions = f.read().splitlines()
+    exclusions = []
+    if exclude_dir is not None:
+        try:
+            with(open(exclude_dir, 'r')) as f:
+                exclusions = f.read().splitlines()
+        except Exception as e:
+            print(e)
 
     # Grab all the fonts
-    font_names = []
-    for extension in ['*.ttf', '*.ttc', '*.otc']:
-        font_names.extend(glob.glob(os.path.join(font_dir, extension)))
+    font_names = fnt.findSystemFonts(fontpaths=None, fontext='ttf')
+    # font_names = []
+    # for extension in ['*.ttf', '*.ttc', '*.otc']:
+    #     font_names.extend(glob.glob(os.path.join(font_dir, extension)))
 
     if not os.path.isdir(data_dir):
         os.mkdir(data_dir)
 
     labels = []
     images = []
-    for i in range(10):
+    for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
         print('Saving font images for digit {:d}'.format(i))
         save_dir = os.path.join(data_dir, str(i))
         if not os.path.isdir(save_dir):
@@ -37,16 +42,19 @@ def save_font_data(font_dir, data_dir, exclude_dir):
             font_name = os.path.basename(font).split('.')[0]
             if font_name not in exclusions:
                 path_to_font = font.replace('\\', '/')
-
                 save_name = os.path.normpath(os.path.join(save_dir, str(font_name) + '.png')).replace('\\', '/')
-
-                # Call Imagemagick, which will save a png of the digit
-                subprocess.call(['magick', '-pointsize', '28', '-font', path_to_font, 'label:{:d}'.format(i),
+                # Call Imagemagick, which will save a png of the font digit
+                popen = subprocess.Popen(['magick', '-pointsize', '28', '-font', path_to_font, 'label:{:d}'.format(i),
                                  '-channel', 'Black', '-gravity', 'center', '-trim', '-bordercolor', 'White',
-                                 '-resize', '28x28>', '-resize', '28x28<', '-extent', '28x28', save_name])
-                image = cv2.imread(save_name, 0)  # Read image using OpenCV, since this is the format used later
-                images.append(image)
-                labels.append(i)
+                                 '-resize', '28x28>', '-resize', '28x28<', '-extent', '28x28', save_name],
+                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                out, err = popen.communicate()
+                if not err:
+                    image = cv2.imread(save_name, 0)  # Read image using OpenCV, since this is the format used later
+                    images.append(image)
+                    labels.append(i)
+                elif 'warning' in err:
+                    os.remove('./' + save_name)  # Remove generated image if Imagemagick resulted in a warning
 
     # Save data to a pickle file
     data = {'labels': labels, 'images': images}
@@ -55,7 +63,6 @@ def save_font_data(font_dir, data_dir, exclude_dir):
 
 
 if __name__ == '__main__':
-    font_path = 'C:/Windows/Fonts'
     data_path = './font_data'
     exclude_path = './exclude.txt'
-    save_font_data(font_path, data_path, exclude_path)
+    save_font_data(data_path, exclude_path)

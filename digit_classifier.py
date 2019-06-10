@@ -11,14 +11,14 @@ from tensorflow.keras.models import Model
 
 
 def train_classifier(data_dir, plot_loss=False):
-    num_classes = 10
+    num_classes = 9
 
     with open(data_dir, 'rb') as f:
         data = pickle.load(f)
     images = data['images']
     img_height, img_width = images[0].shape
     images = images.reshape((len(images), img_height, img_width, 1))
-    labels = data['labels']
+    labels = data['labels'] - 1
     labels = tf.keras.utils.to_categorical(labels, num_classes)
     indices = np.random.permutation(len(images))
     split_index = int(len(indices) * 0.9)
@@ -47,7 +47,7 @@ def train_classifier(data_dir, plot_loss=False):
     model = Model(input, output)
     model.compile(optimizer=tf.keras.optimizers.Adadelta(), loss=tf.keras.losses.categorical_crossentropy)
 
-    history = model.fit(x_train, y_train, epochs=50)
+    history = model.fit(x_train, y_train, epochs=30)
     if plot_loss:
         plt.plot(history.history['loss'])
         plt.title('Loss over time')
@@ -59,4 +59,4 @@ def train_classifier(data_dir, plot_loss=False):
 
 
 if __name__ == '__main__':
-    train_classifier()
+    train_classifier('./font_data/font_data_augmented.pickle')
