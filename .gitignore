@@ -1,7 +1,7 @@
 __pycache__/
 .idea/
 images/
-font_data/
+data/
 *.h5
 *.pickle
 *.txt

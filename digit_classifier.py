@@ -1,7 +1,9 @@
 # Written by Alexander Oshin
 # References: Tensorflow and Keras documentation, MNIST documentation
+# Very Deep Convolutional Networks for Large-Scale Image Recognition (VGG): https://arxiv.org/abs/1409.1556
 
 
+import os
 import pickle
 import numpy as np
 import tensorflow as tf
@@ -10,7 +12,10 @@ from tensorflow.keras.layers import Input, Flatten, Dense, Dropout, Conv2D, MaxP
 from tensorflow.keras.models import Model
 
 
-def train_classifier(data_dir, plot_loss=False):
+def train_classifier(data_dir, save_dir, plot_loss=False):
+
+    print('Training classifier...')
+
     num_classes = 9
 
     with open(data_dir, 'rb') as f:
@@ -47,15 +52,16 @@ def train_classifier(data_dir, plot_loss=False):
     model = Model(input, output)
     model.compile(optimizer=tf.keras.optimizers.Adadelta(), loss=tf.keras.losses.categorical_crossentropy)
 
-    history = model.fit(x_train, y_train, epochs=50)
+    history = model.fit(x_train, y_train, epochs=50, verbose=1)
     if plot_loss:
         plt.plot(history.history['loss'])
         plt.title('Loss over time')
         plt.show()
     model.evaluate(x_test, y_test)
 
-    model.save('classifier.h5')
+    model.save(os.path.join(save_dir, 'classifier.h5'))
     del model
+    print('Classifier saved to file.')
 
 
 if __name__ == '__main__':

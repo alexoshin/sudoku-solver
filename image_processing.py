@@ -60,7 +60,9 @@ def fuse(points, d):
 
 # Grab the puzzle region and warp the perspective
 def extract_puzzle(img):
-    height, width = len(img), len(img[0])
+
+    print('Extracting puzzle from image...')
+
     original = img.copy()
     img = cv2.GaussianBlur(img, (9, 9), 0)
     img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 5, 2)
@@ -85,7 +87,7 @@ def extract_puzzle(img):
         for v in verticals:
             points.append(intersection(h, v))
     points = np.float32(fuse(points, 10))
-    size = max(height, width)
+    size = 495  # Divisible by 9, while also maintaining decent resolution
     arr = np.float32([(size, size), (0, size), (size, 0), (0, 0)])
     M = cv2.getPerspectiveTransform(points, arr)
 
@@ -99,11 +101,11 @@ def extract_puzzle(img):
     for i in range(9):
         for j in range(9):
             potential_digit = dst[box_size*i+6:box_size*(i+1)-6, box_size*j+6:box_size*(j+1)-6]
-            # plt.imshow(potential_digit, cmap='gray')
-            # plt.show()
             white_pixel_count = cv2.countNonZero(potential_digit)
             # print(white_pixel_count)
-            if white_pixel_count > 150:
+            # plt.imshow(potential_digit, cmap='gray')
+            # plt.show()
+            if white_pixel_count > 200:  # May need to be changed based on digit sizes and noise in the image
                 imgs[i, j] = dst[box_size*i:box_size*(i+1), box_size*j:box_size*(j+1)]
                 scaled_digit = cv2.resize(potential_digit, (28, 28)) / 255.0
                 predicted_value = classifier.predict(np.array(scaled_digit).reshape((1, 28, 28, 1)))
@@ -113,12 +115,40 @@ def extract_puzzle(img):
                 # plt.imshow(scaled_digit, cmap='gray')
                 # plt.show()
                 digits[i, j] = predicted_value
-    for row in digits:
-        print(row)
-    return digits
+    return digits, M
+
+
+# Project digits back onto image
+def project_digits(digits, gray_image, puzzle_image_size, projection_matrix):
+
+    print('Projecting solved digits onto original image...')
+
+    height, width = len(gray_image), len(gray_image[0])
+    color_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
+    puzzle_image = np.zeros((puzzle_image_size, puzzle_image_size), dtype=np.uint8)
+    box_size = int(round(puzzle_image_size / 9))
+    for j in range(len(digits)):
+        y = j * box_size + int(round(box_size * 0.75))
+        for i in range(len(digits[0])):
+            digit = digits[j, i]
+            if digit != 0:
+                x = i * box_size + int(round(box_size * 0.33))
+                cv2.putText(puzzle_image, str(digit), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.5, 1, 3)
+    # plt.imshow(puzzle_image)
+    # plt.show()
+    inverse_transform = np.linalg.inv(projection_matrix)
+    transformed_image = cv2.warpPerspective(puzzle_image, inverse_transform, (width, height))
+    for j in range(len(transformed_image)):
+        for i in range(len(transformed_image[0])):
+            if transformed_image[j, i] > 0:
+                color_image[j, i] = [0, 0, 255]
+    return color_image
 
 
 if __name__ == '__main__':
     img = read_gray_img('./images/test1.jpg')
-    puzzle = extract_puzzle(img)
+    puzzle, transformation_matrix = extract_puzzle(img)
     print(puzzle)
+    new_image = project_digits(puzzle, img, 495, transformation_matrix)
+    plt.imshow(cv2.cvtColor(new_image, cv2.COLOR_BGR2RGB))
+    plt.show()

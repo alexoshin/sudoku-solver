@@ -10,8 +10,7 @@ import matplotlib.font_manager as fnt
 
 def save_font_data(data_dir, exclude_dir=None):
 
-    # # Convert paths to operating system for consistency
-    # data_dir = os.path.normpath(data_dir)
+    print('Generating font data...')
 
     exclusions = []
     if exclude_dir is not None:
@@ -23,18 +22,16 @@ def save_font_data(data_dir, exclude_dir=None):
 
     # Grab all the fonts
     font_names = fnt.findSystemFonts(fontpaths=None, fontext='ttf')
-    # font_names = []
-    # for extension in ['*.ttf', '*.ttc', '*.otc']:
-    #     font_names.extend(glob.glob(os.path.join(font_dir, extension)))
 
-    if not os.path.isdir(data_dir):
-        os.mkdir(data_dir)
+    font_images_dir = os.path.join(data_dir, 'font_images')
+    if not os.path.isdir(font_images_dir):
+        os.mkdir(font_images_dir)
 
     labels = []
     images = []
     for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-        print('Saving font images for digit {:d}'.format(i))
-        save_dir = os.path.join(data_dir, str(i))
+        print('Saving font images for digit {:d}...'.format(i))
+        save_dir = os.path.join(font_images_dir, str(i))
         if not os.path.isdir(save_dir):
             os.mkdir(save_dir)
 
@@ -60,6 +57,7 @@ def save_font_data(data_dir, exclude_dir=None):
     data = {'labels': labels, 'images': images}
     with open(os.path.join(data_dir, 'font_data.pickle'), 'wb') as f:
         pickle.dump(data, f)
+    print('Saved font data to file.')
 
 
 if __name__ == '__main__':

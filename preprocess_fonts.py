@@ -8,8 +8,11 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-def augment_font_data(font_data_dir, plot=False):
-    with open(os.path.join(font_data_dir, 'font_data.pickle'), 'rb') as f:
+def augment_font_data(data_dir, plot=False):
+
+    print('Augmenting font data...')
+
+    with open(os.path.join(data_dir, 'font_data.pickle'), 'rb') as f:
         data = pickle.load(f)
 
     img_size = (28, 28)
@@ -139,8 +142,9 @@ def augment_font_data(font_data_dir, plot=False):
     new_images = np.array(new_images) / 255.0
     new_labels = np.array(new_labels)
     new_data = {'images': new_images, 'labels': new_labels}
-    with open(os.path.join(font_data_dir, 'font_data_augmented.pickle'), 'wb') as f:
+    with open(os.path.join(data_dir, 'font_data_augmented.pickle'), 'wb') as f:
         pickle.dump(new_data, f)
+    print('Saved augmented data to file.')
 
 
 if __name__ == '__main__':
