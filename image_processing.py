@@ -2,6 +2,7 @@
 # References: OpenCV documentation, Wikipedia pages for classical computer vision topics
 
 
+import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -59,7 +60,7 @@ def fuse(points, d):
 
 
 # Grab the puzzle region and warp the perspective
-def extract_puzzle(img):
+def extract_puzzle(img, classifier_dir):
 
     print('Extracting puzzle from image...')
 
@@ -97,7 +98,7 @@ def extract_puzzle(img):
     box_size = int(round(size / 9))
     imgs = np.zeros((9, 9, box_size, box_size), dtype='uint8')
     digits = np.zeros((9, 9), dtype='uint8')
-    classifier = load_model('classifier.h5')
+    classifier = load_model(os.path.join(classifier_dir, 'classifier.h5'))
     for i in range(9):
         for j in range(9):
             potential_digit = dst[box_size*i+6:box_size*(i+1)-6, box_size*j+6:box_size*(j+1)-6]
@@ -147,7 +148,7 @@ def project_digits(digits, gray_image, puzzle_image_size, projection_matrix):
 
 if __name__ == '__main__':
     img = read_gray_img('./images/test1.jpg')
-    puzzle, transformation_matrix = extract_puzzle(img)
+    puzzle, transformation_matrix = extract_puzzle(img, './data')
     print(puzzle)
     new_image = project_digits(puzzle, img, 495, transformation_matrix)
     plt.imshow(cv2.cvtColor(new_image, cv2.COLOR_BGR2RGB))

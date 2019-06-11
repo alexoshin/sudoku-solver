@@ -42,7 +42,7 @@ def solve_puzzle(img_dir, save_dir, exclude_file_dir):
         print(e)
         train_classifier(os.path.join(save_dir, 'font_data_augmented.pickle'), save_dir)
 
-    puzzle, transformation_matrix = extract_puzzle(img)
+    puzzle, transformation_matrix = extract_puzzle(img, save_dir)
     print('Finding solution...')
     exact_cover_matrix = create_exact_cover_matrix(puzzle)
     solution = find_solution(exact_cover_matrix)

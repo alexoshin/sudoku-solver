@@ -148,4 +148,4 @@ def augment_font_data(data_dir, plot=False):
 
 
 if __name__ == '__main__':
-    augment_font_data('./font_data/', plot=False)
+    augment_font_data('./data', plot=False)

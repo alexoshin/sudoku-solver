@@ -61,6 +61,4 @@ def save_font_data(data_dir, exclude_dir=None):
 
 
 if __name__ == '__main__':
-    data_path = './font_data'
-    exclude_path = './exclude.txt'
-    save_font_data(data_path, exclude_path)
+    save_font_data('./data', './exclude.txt')

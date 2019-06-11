@@ -52,7 +52,7 @@ def train_classifier(data_dir, save_dir, plot_loss=False):
     model = Model(input, output)
     model.compile(optimizer=tf.keras.optimizers.Adadelta(), loss=tf.keras.losses.categorical_crossentropy)
 
-    history = model.fit(x_train, y_train, epochs=50, verbose=1)
+    history = model.fit(x_train, y_train, epochs=25, verbose=1)
     if plot_loss:
         plt.plot(history.history['loss'])
         plt.title('Loss over time')
@@ -65,4 +65,4 @@ def train_classifier(data_dir, save_dir, plot_loss=False):
 
 
 if __name__ == '__main__':
-    train_classifier('./font_data/font_data_augmented.pickle')
+    train_classifier('./data/font_data_augmented.pickle', './data')
