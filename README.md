@@ -49,7 +49,7 @@ This step contains the following substeps:
 8. Separate squares that contain digits from squares that are empty
 
 ### 2. Recognize the digits
-Supervised learning is used to train a model that classifies font digits. This classifier is used to recognize the value of each of the individual digits of the puzzle. Classifier was created and trained using Tensorflow<sup>[2](#tensorflow)</sup>.
+Supervised learning is used to train a model that classifies font digits. This classifier is used to recognize the value of each of the individual digits of the puzzle. The classifier was created and trained using the open-source library Tensorflow<sup>[2](#tensorflow)</sup>.
 
 This step contains the following substeps:
 
