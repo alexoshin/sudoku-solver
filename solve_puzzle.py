@@ -71,11 +71,14 @@ def solve_puzzle(img_dir, save_dir, exclude_file_dir, plot_solution=True):
 
 
 if __name__ == '__main__':
-    # img_path = './images/test1.jpg'
-    # data_save_path = './data'
-    # exclude_file_path = './exclude.txt'
     img_path = sys.argv[1]
-    data_save_path = sys.argv[2]
-    exclude_file_path = sys.argv[3]
+    if len(sys.argv) >= 3:
+        data_save_path = sys.argv[2]
+    else:
+        data_save_path = './data'
+    if len(sys.argv) >= 4:
+        exclude_file_path = sys.argv[3]
+    else:
+        exclude_file_path = None
     solved_puzzle, solved_image = solve_puzzle(img_path, data_save_path, exclude_file_path, plot_solution=True)
     print('Done!')
