@@ -1,7 +1,6 @@
 # Written by Alexander Oshin
-# Based on Dancing Links by Donald E. Knuth, Stanford University
-# Paper available publicly at:
-# https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
+# References: Dancing Links by Donald E. Knuth, Stanford University
+# Paper available publicly at: https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
 
 
 class Data:
@@ -130,6 +129,8 @@ def search(O, h, k):
 
 # Change solution type from data to row numbers
 def convert_solution(O):
+    if O is None:
+        return None
     solution = [o.position[0] for o in O]
     solution.sort()
     return solution

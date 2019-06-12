@@ -1,10 +1,9 @@
 # Written by Alexander Oshin
-# References: Wikipedia pages for Sudoku and Exact Cover,
-# as well as Knuth's paper available here:
+# References: Wikipedia pages for Sudoku and Exact Cover, as well as Knuth's paper available here:
 # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
 
 
-import dlx
+import dancing_links
 
 
 # Creates an exact cover problem matrix from an NxN sudoku puzzle matrix
@@ -24,8 +23,7 @@ def create_exact_cover_matrix(puzzle):
                 row_col = N * r + c
                 row_num = N * N + N * r + cand
                 col_num = 2 * N * N + N * c + cand
-                box_num = 3 * N * N + r // sqrt_N * N * sqrt_N
-                + c // sqrt_N * N + cand
+                box_num = 3 * N * N + r // sqrt_N * N * sqrt_N + c // sqrt_N * N + cand
                 exact_cover[row][row_col] = 1
                 exact_cover[row][row_num] = 1
                 exact_cover[row][col_num] = 1
@@ -34,7 +32,9 @@ def create_exact_cover_matrix(puzzle):
 
 
 # Converts a solution in exact cover space back to sudoku space
-def convert_solution(exact_cover_matrix, solution):
+def convert_solution(solution):
+    if solution is None:
+        return None
     N = int(len(solution) ** (1.0 / 2))
     sudoku_solution = [[0 for i in range(N)] for j in range(N)]
     for i in range(len(solution)):
@@ -58,7 +58,7 @@ if __name__ == '__main__':
                    [1, 0, 0, 0, 0, 6, 3, 0, 4],
                    [8, 0, 0, 1, 0, 9, 6, 7, 0]]
     exact_cover_matrix = create_exact_cover_matrix(test_puzzle)
-    solution = dlx.find_solution(exact_cover_matrix)
-    sudoku_solution = convert_solution(exact_cover_matrix, solution)
+    solution = dancing_links.find_solution(exact_cover_matrix)
+    sudoku_solution = convert_solution(solution)
     for row in sudoku_solution:
         print(row)
