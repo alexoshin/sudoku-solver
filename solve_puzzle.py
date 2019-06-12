@@ -14,7 +14,7 @@ from sudoku_solver import create_exact_cover_matrix, convert_solution
 from dancing_links import find_solution
 
 
-def solve_puzzle(img_dir, save_dir, exclude_file_dir):
+def solve_puzzle(img_dir, save_dir, exclude_file_dir, plot_solution=True):
 
     img = read_gray_img(img_dir)
     dir_name = os.path.dirname(img_dir)
@@ -58,6 +58,12 @@ def solve_puzzle(img_dir, save_dir, exclude_file_dir):
         final_image = project_digits(solved_digits, img, 495, transformation_matrix)
         cv2.imwrite(save_location, final_image)
         print('Saved solved image to file.')
+        if plot_solution:
+            print('Plotting solution.')
+            plt.imshow(cv2.cvtColor(final_image, cv2.COLOR_BGR2RGB))
+            plt.xticks([])
+            plt.yticks([])
+            plt.show()
         return final_solution, final_image
     else:
         print('Could not find solution.')
@@ -71,9 +77,5 @@ if __name__ == '__main__':
     img_path = sys.argv[1]
     data_save_path = sys.argv[2]
     exclude_file_path = sys.argv[3]
-    solved_puzzle, solved_image = solve_puzzle(img_path, data_save_path, exclude_file_path)
-    if solved_puzzle is not None:
-        # for row in solved_puzzle:
-        #     print(row)
-        plt.imshow(cv2.cvtColor(solved_image, cv2.COLOR_BGR2RGB))
-        plt.show()
+    solved_puzzle, solved_image = solve_puzzle(img_path, data_save_path, exclude_file_path, plot_solution=True)
+    print('Done!')
