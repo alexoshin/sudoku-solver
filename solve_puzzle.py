@@ -50,6 +50,7 @@ def solve_puzzle(img_dir, save_dir, exclude_file_dir, plot_solution=True):
 
     if final_solution is not None:
         print('Solution found!')
+        print(np.array(final_solution))
         solved_digits = np.zeros_like(puzzle, dtype=np.uint8)
         for j in range(len(puzzle)):
             for i in range(len(puzzle[0])):

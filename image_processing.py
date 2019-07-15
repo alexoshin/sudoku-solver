@@ -73,24 +73,36 @@ def extract_puzzle(img, classifier_dir):
     # img = cv2.dilate(img, kernel=kernel)
     new_img = np.zeros_like(img, dtype='uint8')
     contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if len(contours) != 0:
-        c = max(contours, key=cv2.contourArea)
-        cv2.drawContours(new_img, [c], 0, (255, 255, 255), 3)
-    lines = cv2.HoughLines(new_img, 1, np.pi/90, 100)
-    horizontals = []
-    verticals = []
-    for line in lines:
-        rho, theta = line[0]
-        if theta < 1 or theta > 3:
-            verticals.append(line)
-        else:
-            horizontals.append(line)
-    points = []
-    for h in horizontals:
-        for v in verticals:
-            points.append(intersection(h, v))
-    points = np.float32(fuse(points, 20))
+    if len(contours) == 0:
+        print('Could not find any contours!')
+        exit(1)
+    c = max(contours, key=cv2.contourArea)
+    # cv2.drawContours(new_img, [c], 0, (255, 255, 255), 3)
+    # lines = cv2.HoughLines(new_img, 1, np.pi/90, 100)
+    # plt.imshow(new_img, cmap='gray')
+    # plt.show()
+    # horizontals = []
+    # verticals = []
+    # for line in lines:
+    #     rho, theta = line[0]
+    #     print(line)
+    #     if theta < 1 or theta > 3:
+    #         verticals.append(line)
+    #     else:
+    #         horizontals.append(line)
+    # points = []
+    # for h in horizontals:
+    #     for v in verticals:
+    #         points.append(intersection(h, v))
+    # points = np.float32(fuse(points, 20))
+    square = 0.1 * cv2.arcLength(c, True)
+    approx = cv2.approxPolyDP(c, square, True)
+    if len(approx) != 4:
+        print('Could not estimate a square from the contour!')
+        exit(1)
+    points = approx.reshape((4, 2))
     center = np.mean(points[:, 0]), np.mean(points[:, 1])
+    # print(center)
     top_left, top_right, bottom_right, bottom_left = center, center, center, center
     for point in points:
         cv2.circle(new_img, tuple(point), 3, (255, 0, 0), 3)
@@ -111,7 +123,7 @@ def extract_puzzle(img, classifier_dir):
             bottom_left_dist_to_center = abs(bottom_left[0] - center[0] + bottom_left[1] - center[1])
             if dist_to_center > bottom_left_dist_to_center:
                 bottom_left = point
-    points = np.array([top_left, top_right, bottom_right, bottom_left])
+    points = np.array([top_left, top_right, bottom_right, bottom_left], dtype=np.float32)
     # plt.imshow(new_img)
     # plt.show()
     size = 495  # Divisible by 9, while also maintaining decent resolution
