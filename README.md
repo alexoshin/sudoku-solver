@@ -42,7 +42,7 @@ This step contains the following substeps:
 1. Perform filtering on the image to reduce noise
 2. Threshold the image
 3. Extract the largest contour in the image
-4. Use Hough lines to extract a square from this contour
+4. Find the best possible square from this contour
 5. Perform a perspective transform from the square in the image to a perfect square
 6. Divide this new image into 9x9 squares
 7. Center each square around the largest white region
