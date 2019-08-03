@@ -6,12 +6,12 @@ import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from save_font_data import save_font_data
-from preprocess_fonts import augment_font_data
-from digit_classifier import train_classifier
-from image_processing import read_gray_img, extract_puzzle, project_digits
-from sudoku_solver import create_exact_cover_matrix, convert_solution
-from dancing_links import find_solution
+from src.save_font_data import save_font_data
+from src.preprocess_fonts import augment_font_data
+from src.digit_classifier import train_classifier
+from src.image_processing import read_gray_img, extract_puzzle, project_digits
+from src.sudoku_solver import create_exact_cover_matrix, convert_solution
+from src.dancing_links import find_solution
 
 
 def solve_puzzle(img_dir, save_dir, exclude_file_dir, plot_solution=True):

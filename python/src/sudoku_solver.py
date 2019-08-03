@@ -3,7 +3,7 @@
 # https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
 
 
-import dancing_links
+import src.dancing_links
 
 
 # Creates an exact cover problem matrix from an NxN sudoku puzzle matrix
