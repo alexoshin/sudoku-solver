@@ -17,7 +17,7 @@ Run ```pip install -r requirements.txt``` in a new virtual environment to instal
 
 ## Usage
 
-```python solve_puzzle.py <image_file> <save_directory> <font_exclude_file>```
+```python python/solve_puzzle.py <image_file> <save_directory> <font_exclude_file>```
 
 ```<image_file>``` points to an image of a Sudoku puzzle. This has been verified to support .jpg and .png files, but other image formats may be used at your own risk.
 
